@@ -35,3 +35,8 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+wwwroot/*.js
+node_modules
+typings
+dist
