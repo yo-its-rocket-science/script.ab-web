@@ -1,3 +1,4 @@
+import React from "react";
 import { NextPage } from "next";
 import { Navbar } from "../components/Navbar";
 import {
@@ -28,10 +29,11 @@ const TranscriptData = [
         name: "React",
       },
     ],
+    xp: 3,
   },
   {
     id: 2,
-    course: "CSCE414",
+    course: "CSCE214",
     skills: [
       {
         id: 1,
@@ -42,6 +44,7 @@ const TranscriptData = [
         name: "Communication",
       },
     ],
+    xp: 2,
   },
 ];
 
@@ -50,6 +53,13 @@ const Transcript = ({
 }: {
   transcript: typeof TranscriptData[0];
 }) => {
+  const [course, setCourse] = React.useState(transcript.course);
+  const [changed, setChanged] = React.useState(false);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCourse(event.target.value);
+    setChanged(true);
+  };
+
   return (
     <Container className="border-2 border-black-500 rounded-sm shadow">
       <Box className="flex flew-row gap-3 items-center">
@@ -58,7 +68,8 @@ const Transcript = ({
           id="courseName"
           label="Course name"
           name="courseName"
-          value={transcript.course}
+          value={course}
+          onChange={handleChange}
         />
 
         <div className="flex-grow">
@@ -68,7 +79,7 @@ const Transcript = ({
           ))}
         </div>
         <div>
-          {false ? <Button variant="contained">Update Course</Button> : <></>}
+          {changed ? <Button variant="contained">Update Course</Button> : null}
         </div>
       </Box>
     </Container>
@@ -79,14 +90,14 @@ const TranscriptManager: NextPage = () => {
   return (
     <div>
       <Navbar />
-      <Grid container spacing={3} className="m-1">
+      <Grid container spacing={3} className="m-3">
         <Grid item xs={2}>
-          <Button variant="contained" className="m-3">
-            Update Transcript
-          </Button>
+          <Button variant="contained">Update Transcript</Button>
         </Grid>
         <Grid item xs={8}>
-          <Button variant="contained">Add Course</Button>
+          <Button variant="contained" className="m-1 self-end">
+            Add Course
+          </Button>
           <div>
             {TranscriptData.map((course) => (
               <div key={course.id}>
@@ -96,7 +107,9 @@ const TranscriptManager: NextPage = () => {
           </div>
         </Grid>
         <Grid item xs={2}>
-          <Button variant="contained">View jobs</Button>
+          <Link href="/jobs">
+            <Button variant="contained">View jobs</Button>
+          </Link>
         </Grid>
       </Grid>
     </div>
