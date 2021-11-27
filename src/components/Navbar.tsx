@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export function Navbar() {
   return (
-    <AppBar position="static" style={{ padding: 16 }}>
+    <AppBar position="static" className="p-6" elevation={0}>
       <Typography variant="h6">
-        <Link href="/">Script.ab</Link>
+        <Link href="/">Script.AB</Link>
       </Typography>
     </AppBar>
   );

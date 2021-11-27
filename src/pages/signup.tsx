@@ -25,23 +25,14 @@ type SignUpUser = {
 
 const SignUp: NextPage = () => {
   const router = useRouter();
-  const { email } = router.query as { email: string };
-  const [files, setFiles] = useState<File[]>([]);
+  const [transcriptFiles, setTranscriptFiles] = useState<File[]>([]);
+  const [resumefiles, setResumeFiles] = useState<File[]>([]);
   const [userData, setUserData] = useState<SignUpUser>({
     firstName: "",
     lastName: "",
     password: "",
-    email,
+    email: "",
   });
-
-  useEffect(() => {
-    if (email) {
-      setUserData({
-        ...userData,
-        email,
-      });
-    }
-  }, [email]);
 
   const onInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData({
@@ -55,7 +46,7 @@ const SignUp: NextPage = () => {
 
     // TODO: Create a user in db
 
-    console.log(userData, files);
+    router.push("/transcriptManager");
   };
 
   return (
@@ -76,7 +67,7 @@ const SignUp: NextPage = () => {
           md={5}
           component={Paper}
           square
-          className="flex flex-col justify-center items-center"
+          className="flex flex-col justify-center items-center bg-gradient-to-t from-blue-100"
         >
           <Box
             sx={{
@@ -88,7 +79,7 @@ const SignUp: NextPage = () => {
             }}
           >
             <div className="flex flex-col items-start w-full">
-              <Typography component="h1" variant="h2">
+              <Typography fontWeight="bold" component="h1" variant="h2">
                 Welcome!
               </Typography>
               <Typography component="h2" variant="h5">
@@ -97,6 +88,7 @@ const SignUp: NextPage = () => {
             </div>
             <Box
               component="form"
+              noValidate
               sx={{ mt: 1 }}
               className="flex flex-col w-full"
               onSubmit={handleSubmit}
@@ -105,13 +97,26 @@ const SignUp: NextPage = () => {
                 margin="normal"
                 required
                 fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                onChange={onInput}
+                value={userData.email}
+                type="email"
+                className="bg-white"
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
                 id="firstName"
                 label="First Name"
                 name="firstName"
                 autoComplete="given-name"
-                autoFocus
                 value={userData.firstName}
                 onInput={onInput}
+                className="bg-white"
               />
               <TextField
                 margin="normal"
@@ -123,6 +128,7 @@ const SignUp: NextPage = () => {
                 autoComplete="family-name"
                 value={userData.lastName}
                 onInput={onInput}
+                className="bg-white"
               />
               <TextField
                 margin="normal"
@@ -134,8 +140,22 @@ const SignUp: NextPage = () => {
                 autoComplete="new-password"
                 value={userData.password}
                 onInput={onInput}
+                className="bg-white"
               />
-              <StyledDropzone files={files} setFiles={setFiles} />
+              <div className="m-1">
+                <StyledDropzone
+                  label={"Drag and drop your resume here"}
+                  files={resumefiles}
+                  setFiles={setResumeFiles}
+                />
+              </div>
+              <div className="m-1">
+                <StyledDropzone
+                  label={"Drag and drop your transcript here"}
+                  files={transcriptFiles}
+                  setFiles={setTranscriptFiles}
+                />
+              </div>
               <Link href="/transcriptManager">
                 <Button
                   type="submit"
@@ -172,7 +192,15 @@ const SignUp: NextPage = () => {
   );
 };
 
-function StyledDropzone({ files, setFiles }: { files: File[]; setFiles: any }) {
+function StyledDropzone({
+  label,
+  files,
+  setFiles,
+}: {
+  files: File[];
+  setFiles: any;
+  label: string;
+}) {
   const baseStyle = {
     flex: 1,
     display: "flex",
@@ -183,7 +211,7 @@ function StyledDropzone({ files, setFiles }: { files: File[]; setFiles: any }) {
     borderRadius: 2,
     borderColor: "#eeeeee",
     borderStyle: "dashed",
-    backgroundColor: "#fafafa",
+    backgroundColor: "#fff",
     color: "#bdbdbd",
     outline: "none",
     transition: "border .24s ease-in-out",
@@ -208,7 +236,7 @@ function StyledDropzone({ files, setFiles }: { files: File[]; setFiles: any }) {
     isDragAccept,
     isDragReject,
   } = useDropzone({
-    accept: "image/*",
+    accept: "application/pdf",
     onDrop: (acceptedFiles) => setFiles(acceptedFiles),
     maxFiles: 1,
   });
@@ -228,7 +256,7 @@ function StyledDropzone({ files, setFiles }: { files: File[]; setFiles: any }) {
       {/* @ts-ignore */}
       <div {...getRootProps({ style })}>
         <input {...getInputProps()} />
-        <p>Drag n drop or click to upload your transcript here</p>
+        <p>{label}</p>
       </div>
       {(files || []).map((file) => (
         <div key={file.name} className="flex gap-3 my-2">

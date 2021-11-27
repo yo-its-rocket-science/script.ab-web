@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { Navbar } from "../components/Navbar";
 import {
@@ -13,47 +13,35 @@ import {
   Stack,
   Item,
   Container,
+  Chip,
 } from "@mui/material";
+import clsx from "clsx";
+import { useRouter } from "next/router";
+import { useQuery } from "react-query";
+import { BaseTextFieldProps } from "@mui/material";
+import axios from "axios";
 
-const TranscriptData = [
-  {
-    id: 1,
-    course: "CSCE413",
-    skills: [
-      {
-        id: 1,
-        name: "JavaScript",
-      },
-      {
-        id: 2,
-        name: "React",
-      },
-    ],
-    xp: 3,
-  },
-  {
-    id: 2,
-    course: "CSCE214",
-    skills: [
-      {
-        id: 1,
-        name: "Java",
-      },
-      {
-        id: 2,
-        name: "Communication",
-      },
-    ],
-    xp: 2,
-  },
-];
+type Transcript = {
+  code: string;
+  skills: string[];
+};
 
-const Transcript = ({
-  transcript,
-}: {
-  transcript: typeof TranscriptData[0];
-}) => {
-  const [course, setCourse] = React.useState(transcript.course);
+const Cell: React.FC<{ className?: string }> = ({ children, className }) => {
+  return (
+    <div
+      className={clsx(
+        "flex",
+        "m-6",
+        ...(className ? className.split(" ") : [])
+      )}
+    >
+      {children}
+    </div>
+  );
+};
+
+const Transcript = ({ transcript }: { transcript: Transcript }) => {
+  const [course, setCourse] = React.useState(transcript.code);
   const [changed, setChanged] = React.useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCourse(event.target.value);
@@ -61,57 +49,108 @@ const Transcript = ({
   };
 
   return (
-    <Container className="border-2 border-black-500 rounded-sm shadow">
-      <Box className="flex flew-row gap-3 items-center">
-        <TextField
-          margin="normal"
-          id="courseName"
-          label="Course name"
-          name="courseName"
-          value={course}
-          onChange={handleChange}
-        />
-
-        <div className="flex-grow">
-          <h2>Skills:</h2>
-          {transcript.skills.map((skill) => (
-            <span key={skill.id}>{skill.name}, </span>
-          ))}
-        </div>
-        <div>
-          {changed ? <Button variant="contained">Update Course</Button> : null}
-        </div>
-      </Box>
-    </Container>
+    <>
+      <Cell className="mx-6 my-3 p-3 bg-blueGray-100">
+        <Typography component="p" variant="h6">
+          {transcript.code}
+        </Typography>
+      </Cell>
+      <Cell className="mx-6 my-3 p-3 bg-blueGray-100">
+        <Typography component="p" variant="h6">
+          <div className="flex gap-3">
+            {transcript.skills.map((skill) => (
+              <Chip key={skill} label={skill} />
+            ))}
+          </div>
+        </Typography>
+      </Cell>
+      <Cell />
+    </>
   );
 };
 
+function useTranscriptData() {
+  return useQuery<Transcript[]>("transcriptData", async () => {
+    const transcriptData = await fetch("/api/transcript").then((res) =>
+      res.json()
+    );
+
+    return transcriptData;
+  });
+}
+
 const TranscriptManager: NextPage = () => {
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const { data } = useTranscriptData();
+  const [transcriptData, setTranscriptData] = useState(data);
+
+  const onSearchInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearch(value);
+    if (value === "") {
+      setTranscriptData(data);
+      return;
+    }
+
+    setTranscriptData(
+      (transcriptData ?? []).filter(
+        (transcript) =>
+          transcript.code.toLowerCase().includes(value.toLowerCase()) ||
+          transcript.skills.some((skill) =>
+            skill.toLowerCase().includes(value.toLowerCase())
+          )
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (data) {
+      setTranscriptData(data);
+    }
+  }, [data]);
+
   return (
     <div>
       <Navbar />
-      <Grid container spacing={3} className="m-3">
-        <Grid item xs={2}>
-          <Button variant="contained">Update Transcript</Button>
-        </Grid>
-        <Grid item xs={8}>
-          <Button variant="contained" className="m-1 self-end">
-            Add Course
+
+      <div
+        className="grid w-3/4 my-0 mx-auto items-center"
+        style={{ gridTemplateColumns: "1fr 3fr 1fr" }}
+      >
+        <Cell>
+          <Button variant="contained">Upload Transcript</Button>
+        </Cell>
+        <Cell>
+          <TextField
+            value={search}
+            onInput={onSearchInputChange}
+            className="w-full"
+            placeholder="Search"
+          />
+        </Cell>
+        <Cell />
+
+        <Cell className="bg-gray-200 p-3 rounded-md">
+          <Typography fontWeight="bold" component="h2" variant="h5">
+            Courses
+          </Typography>
+        </Cell>
+        <Cell className="bg-gray-200 p-3 rounded-md">
+          <Typography fontWeight="bold" component="h2" variant="h5">
+            Skills
+          </Typography>
+        </Cell>
+        <Cell>
+          <Button variant="contained" onClick={() => router.push("/jobs")}>
+            Find Jobs
           </Button>
-          <div>
-            {TranscriptData.map((course) => (
-              <div key={course.id}>
-                <Transcript transcript={course} />
-              </div>
-            ))}
-          </div>
-        </Grid>
-        <Grid item xs={2}>
-          <Link href="/jobs">
-            <Button variant="contained">View jobs</Button>
-          </Link>
-        </Grid>
-      </Grid>
+        </Cell>
+
+        {(transcriptData ?? []).map((transcript) => (
+          <Transcript key={transcript.code} transcript={transcript} />
+        ))}
+      </div>
     </div>
   );
 };

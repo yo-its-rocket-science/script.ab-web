@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { NextPage } from "next";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { Navbar } from "../components/Navbar";
 import {
   AppBar,
@@ -13,86 +15,91 @@ import {
   Stack,
   Item,
   Container,
+  Chip,
 } from "@mui/material";
-const JobData = [
-  {
-    id: 1,
-    title: "Frontend Developer",
-    image: "",
-    company: "Atla.ML",
-    location: "Calgary",
-    description: "Junior Frontend Developer",
-    date: "2020-01-01",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Redux"],
-  },
-  {
-    id: 2,
-    title: "Backend Developer",
-    image: "",
-    company: "Neo Financial",
-    location: "Edmonton",
-    description: "Junior Backend Developer",
-    date: "2020-01-01",
-    skills: ["Node.js", "Express", "MongoDB", "Python", "Django"],
-  },
-  {
-    id: 3,
-    title: "Fullstack Developer",
-    image: "",
-    company: "Amazon",
-    location: "Calgary",
-    description: "Junior Fullstack Developer",
-    date: "2020-01-01",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Redux"],
-  },
-  {
-    id: 4,
-    title: "Fullstack Developer",
-    image: "",
-    company: "Alberta Government",
-    location: "Grand Prarie",
-    description: "Junior Fullstack Developer",
-    date: "2020-01-01",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Redux"],
-  },
-  {
-    id: 5,
-    title: "Frontend Developer",
-    image: "",
-    company: "Facebook",
-    location: "Calgary",
-    description: "Junior Frontend Developer",
-    date: "2020-01-01",
-    skills: ["HTML", "CSS", "JavaScript", "React", "Redux"],
-  },
-];
+import { JobData } from "../mockJobs";
 
 const JobCard = ({ job }) => {
+  const router = useRouter();
   return (
     <Container>
-      <Box className="border-black border-2 flex flex-row justify-between">
-        <img src={job.image} />
-        <h2>{job.title}</h2>
-        <p>{job.date}</p>
-        <p>{job.description}</p>
-        <p>{job.location}</p>
-        <p>{job.salary}</p>
-        <Button variant="contained">Apply</Button>
+      <Box
+        href={`/viewJob?id=${job.id}`}
+        className="border-black border-2 rounded-lg flex flex-row justify-between ring-1 items-center cursor-pointer"
+        component="a"
+      >
+        <div className="ml-8 m-2">
+          <Image
+            src="/job.jpg"
+            layout="intrinsic"
+            height={100}
+            width={100}
+            alt="Company logo"
+            className="rounded-full"
+          />
+        </div>
+        <div className="flex flex-col items-baseline flex-initial w-6/12">
+          <div className="flex-initial">
+            <p>
+              <b>{job.title}</b> - {job.company}
+            </p>
+          </div>
+          <div>
+            <p>{job.location}</p>
+          </div>
+          <div>
+            {job.skills.map((skill) => (
+              <>
+                <Chip key={skill} label={skill} className="m-1" />
+              </>
+            ))}
+          </div>
+        </div>
+
+        <p>
+          <b>Posted:</b> {job.date}
+        </p>
+        {/* <div className="mr-4">
+          <Button variant="contained" onClick={() => router.push("/viewJob")}>
+            View
+          </Button>
+        </div> */}
       </Box>
     </Container>
   );
 };
 
 const Jobs: NextPage = () => {
+  const [filteredData, setFilteredData] = useState(JobData);
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+    const filteredData = JobData.filter(
+      (job) =>
+        job.title.toLowerCase().includes(value.toLowerCase()) ||
+        job.company.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredData(filteredData);
+  };
+
   return (
     <>
       <Navbar />
-      <div className="m-5">
-        {JobData.map((job) => (
-          <div key={job.id} className="m-3">
-            <JobCard job={job} />
+      <div className="flex">
+        <div className="m-5 flex-grow">
+          {filteredData.map((job) => (
+            <div key={job.id} className="m-3">
+              <JobCard job={job} />
+            </div>
+          ))}
+        </div>
+        <div className="flex-initial m-6">
+          <h1 className="text-lg font-medium">Filters</h1>
+          <hr className="m-2" />
+          <div className="flex flex-col">
+            <TextField label="Search" onChange={handleChange} />
           </div>
-        ))}
+        </div>
       </div>
     </>
   );

@@ -42,7 +42,7 @@ const Home: NextPage = () => {
           md={5}
           component={Paper}
           square
-          className="flex flex-col justify-center items-start"
+          className="flex flex-col justify-center items-start bg-gradient-to-b from-blue-200"
         >
           <Box
             sx={{
@@ -66,33 +66,13 @@ const Home: NextPage = () => {
               component="form"
               sx={{ mt: 1 }}
               className="flex flex-col w-full"
-              onSubmit={
-                email ? () => router.push(`/signup?email=${email}`) : undefined
-              }
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-                onChange={onEmailInput}
-                value={email}
-                type="email"
-              />
               <Button
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                 className="w-1/2"
-                onClick={
-                  email
-                    ? () => router.push(`/signup?email=${email}`)
-                    : undefined
-                }
+                onClick={() => router.push(`/signup`)}
               >
                 Get started
               </Button>
@@ -103,7 +83,7 @@ const Home: NextPage = () => {
                       type="a"
                       href="/employer"
                       fullWidth
-                      variant="text"
+                      variant="outlined"
                       sx={{ mt: 3, mb: 2 }}
                     >
                       I am an employer
@@ -112,7 +92,7 @@ const Home: NextPage = () => {
                 </Grid>
                 <Grid item className="w-1/2">
                   <Link href="/jobs" passHref>
-                    <Button fullWidth variant="text" sx={{ mt: 3, mb: 2 }}>
+                    <Button fullWidth variant="outlined" sx={{ mt: 3, mb: 2 }}>
                       I am a third party
                     </Button>
                   </Link>
