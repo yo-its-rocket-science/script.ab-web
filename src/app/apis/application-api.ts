@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 import globalAxios, { AxiosPromise, AxiosInstance } from "axios";
-import { Configuration } from "../../../api/configuration";
+import { Configuration } from "./configuration";
 // Some imports not used depending on template conditions
 // @ts-ignore
 import {
