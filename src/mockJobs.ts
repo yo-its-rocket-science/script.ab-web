@@ -2,7 +2,7 @@ export const JobData = [
   {
     id: 1,
     title: "AI Developer",
-    image: "",
+    image: "/alta.png",
     company: "Atla.ML",
     location: "Edmonton",
     description: "AI Developer position open at Atla.ML",
@@ -17,7 +17,7 @@ export const JobData = [
   {
     id: 2,
     title: "Backend Developer",
-    image: "",
+    image: "/neo.png",
     company: "Neo Financial",
     location: "Calgary",
     description: "Junior Backend Developer",
@@ -31,7 +31,7 @@ export const JobData = [
   {
     id: 3,
     title: "Hardware Engineer",
-    image: "",
+    image: "/amazon.png",
     company: "Amazon",
     location: "Calgary",
     description: "Junior Fullstack Developer",
@@ -46,7 +46,7 @@ export const JobData = [
   {
     id: 4,
     title: "Staff Accountant",
-    image: "",
+    image: "/deloitte.png",
     company: "Deloitte",
     location: "Edmonton",
     description: "Accountant",
@@ -61,7 +61,7 @@ export const JobData = [
   {
     id: 5,
     title: "Auditor",
-    image: "",
+    image: "/calgary.png",
     company: "City of Calgary",
     location: "Calgary",
     description: "",

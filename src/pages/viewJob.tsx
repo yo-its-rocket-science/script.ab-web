@@ -41,7 +41,7 @@ const ViewJob = (props) => {
           <div className="flex flex-row items-center justify-center bg-gray-100">
             <div className="m-3">
               <Image
-                src="/job.jpg"
+                src={Job.image}
                 layout="intrinsic"
                 height={100}
                 width={100}
