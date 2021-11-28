@@ -57,7 +57,7 @@ const SignUp: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Navbar title={'Sign Up'} />
+      <Navbar title={"Sign Up"} />
 
       <Grid container component="main" sx={{ height: "100vh" }}>
         <Grid
