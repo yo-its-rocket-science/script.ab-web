@@ -83,7 +83,7 @@ const Jobs: NextPage = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar title={"Matched Jobs"} />
       <div className="flex">
         <div className="m-5 flex-grow">
           {filteredData.map((job) => (
