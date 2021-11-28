@@ -15,7 +15,6 @@ import {
   TextField,
   Box,
   Stack,
-  Item,
   Container,
   Chip,
 } from "@mui/material";
@@ -127,6 +126,7 @@ const SkillMatch = (props) => {
 };
 
 const JobCard = ({ job }) => {
+  const router = useRouter();
   return (
     <Container>
       <Box className="border-black border-2 rounded-lg flex flex-row justify-between ring-1 items-center">
