@@ -29,7 +29,7 @@ const JobCard = ({ job }) => {
       >
         <div className="ml-8 m-2">
           <Image
-            src="/job.jpg"
+            src={job.image}
             layout="intrinsic"
             height={100}
             width={100}
