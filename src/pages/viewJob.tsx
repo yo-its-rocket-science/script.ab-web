@@ -35,7 +35,7 @@ const ViewJob = (props) => {
 
   return (
     <>
-      <Navbar />
+      <Navbar title={"Job Details"} />
       <div className="flex flex-col ">
         <div className="w-full">
           <div className="flex flex-row items-center justify-center bg-gray-100">
@@ -91,7 +91,7 @@ const SkillMatch = (props) => {
   };
 
   const columns: GridColDef[] = [
-    { field: "match", headerName: "Match Level", width: 200 },
+    { field: "match", headerName: "Match Level", width: 150 },
     { field: "skill", headerName: "Skill", width: 900 },
   ];
 
@@ -99,13 +99,16 @@ const SkillMatch = (props) => {
   const StrongMatchSkill = Array.from(
     new Set([...(allSkills ?? [])].filter((x) => jobSkills.has(x)))
   );
-  const UnmatchedSkills = Array.from(
+  let UnmatchedSkills = Array.from(
     new Set([...(allSkills ?? [])].filter((x) => !jobSkills.has(x)))
   );
+  //split array into two
+  const PartialMatch = UnmatchedSkills.slice(0, UnmatchedSkills.length / 2);
+  UnmatchedSkills = UnmatchedSkills.slice(UnmatchedSkills.length / 2);
 
   const rows: GridRowsProp = [
     { id: 1, match: levels.Strong, skill: StrongMatchSkill },
-    { id: 2, match: levels.Partial, skill: "CSS" },
+    { id: 2, match: levels.Partial, skill: PartialMatch },
     { id: 3, match: levels.Unmatched, skill: UnmatchedSkills },
   ];
 

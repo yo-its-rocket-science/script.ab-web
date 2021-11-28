@@ -111,7 +111,7 @@ const TranscriptManager: NextPage = () => {
 
   return (
     <div>
-      <Navbar />
+      <Navbar title={"Transcript Manager"} />
 
       <div
         className="grid w-3/4 my-0 mx-auto items-center"
